@@ -1,8 +1,41 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model IEnumerable<FileSystem.Models.Folder>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1>Catalog Items</h1>
+<h2>You are in @ViewBag.Name folder</h2>
+
+@if (!(Model.Count() > 0))
+{
+    <h2>Your filesystem or folder is empty. Try to add your first folder!</h2>
+    <a asp-action="Create" asp-route-id="@ViewBag.Id" class="btn btn-primary">Add Folder</a>
+    <a asp-action="Back" asp-route-id="@ViewBag.ParentId" class="btn btn-primary">Back</a>
+}
+else
+{
+    @if(!Model.All(x=>x.Parent_Id==null))
+    {
+        <a asp-action="Back" asp-route-id="@ViewBag.ParentId" class="btn btn-primary">Back</a>
+    }
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <a asp-action="Index" asp-route-id="@item.Id">@item.Name</a>
+                    </td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-warning">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <a asp-action="Create" asp-route-id="@ViewBag.Id" class="btn btn-primary">Add Folder</a>
+
+}
