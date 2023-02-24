@@ -7,7 +7,7 @@
         <label asp-for="Name" class="control-label"></label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
-        <input asp-for="Parent_Id" value="@ViewBag.ParrentId" />
+        <input asp-for="Parent_Id" value="@ViewBag.ParrentId" hidden/>
     </div>
     <div class="form-group">
         <input type="submit" value="Create" class="btn btn-primary" />
