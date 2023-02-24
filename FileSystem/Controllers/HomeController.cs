@@ -8,12 +8,10 @@ namespace FileSystem.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly DataContext context;
 
-        public HomeController(ILogger<HomeController> logger, DataContext _context)
+        public HomeController(DataContext _context)
         {
-            _logger = logger;
             context = _context;
         }
 
@@ -21,6 +19,15 @@ namespace FileSystem.Controllers
         {
             var folders = context.Folders.Where(x => x.Parent_Id == id);
             ViewBag.Id = id;
+            if (id != null)
+            {
+                ViewBag.Name = context.Folders.Where(x=>x.Id == id).SingleOrDefault().Name;
+                ViewBag.ParentId = context.Folders.Where(x => x.Id == id).SingleOrDefault().Parent_Id;
+            }
+            else
+            {
+                ViewBag.Name = "Root";
+            }
             return View(folders);
         }
 
@@ -32,21 +39,34 @@ namespace FileSystem.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(Folder folder)
+        public IActionResult Create(Folder folder)
         {
             if (ModelState.IsValid)
             {   
                 if(folder.Id!=0) folder.Id = 0;
                 context.Folders.Add(folder);
                 context.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index","Home", new {@id = folder.Parent_Id});
             }
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Delete(int id)
         {
-            return View();
+            var folderToDelete = context.Folders.SingleOrDefault(x => x.Id==id);
+            foreach(var x in context.Folders.Where(x => x.Parent_Id == id))
+            {
+                context.Folders.Remove(x);
+            }
+            context.Folders.Remove(folderToDelete!);
+            context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Back(int id)
+        {
+            if(id == 0) return RedirectToAction("Index");
+            return RedirectToAction("Index", "Home", new { @id = id });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
