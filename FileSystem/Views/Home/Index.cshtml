@@ -30,12 +30,14 @@ else
                         <a asp-action="Index" asp-route-id="@item.Id">@item.Name</a>
                     </td>
                     <td>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-warning">Delete</a>
+                        <a asp-controller="Folder" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-warning">Delete</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-    <a asp-action="Create" asp-route-id="@ViewBag.Id" class="btn btn-primary">Add Folder</a>
-
+    <a asp-controller="Folder" asp-action="Create" asp-route-id="@ViewBag.Id" class="btn btn-primary">Add Folder</a>
+    
+    //<a asp-action="Import" class="btn btn-primary">Import from file</a>
+    
 }
